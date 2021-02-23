@@ -1,10 +1,10 @@
-﻿namespace Issuetracker_Backend.Model
+﻿using WalletAppAPI.Models.Common;
+
+namespace Issuetracker_Backend.Model
 {
-    public record LabelData
+    public record LabelData : NamedEntityData
     {
-        public string Id { get; init; }
-        public string Name { get; init; }
         public string RecordId { get; init; }
-        public string ColorId { get; init; }
+        public string ColorCode { get; init; }
     }
 }

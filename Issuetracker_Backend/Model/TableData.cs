@@ -1,9 +1,8 @@
-﻿namespace Issuetracker_Backend.Model
+﻿using Issuetracker_Backend.Model.Common;
+
+namespace Issuetracker_Backend.Model
 {
-    public record TableData
+    public record TableData : DefinedEntityData
     {
-        public string Id { get; init; }
-        public string Name { get; init; }
-        public string Description { get; init; }
     }
 }
