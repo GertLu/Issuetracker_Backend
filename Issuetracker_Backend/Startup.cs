@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using WorkoutApplication.Model;
 
 namespace Issuetracker_Backend
 {
@@ -34,6 +36,9 @@ namespace Issuetracker_Backend
                         builder.WithOrigins("http://localhost:3000/", "http://localhost:3001/", "http://localhost:56935/").AllowAnyHeader().AllowAnyOrigin();
                     });
             });
+            services.AddDbContext<DataContext>(OptionsBuilderConfigurationExtensions =>
+                OptionsBuilderConfigurationExtensions.UseNpgsql(
+                    Configuration.GetConnectionString("Default")));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -44,6 +49,9 @@ namespace Issuetracker_Backend
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            using (var context = scope.ServiceProvider.GetService<DataContext>()) context.Database.EnsureCreated();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
