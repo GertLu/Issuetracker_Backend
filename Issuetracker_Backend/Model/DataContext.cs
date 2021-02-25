@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Issuetracker_Backend.Model;
-using Microsoft.EntityFrameworkCore;
-using Npgsql;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace WorkoutApplication.Model
+namespace Issuetracker_Backend.Model
 {
     public class DataContext : DbContext
     {

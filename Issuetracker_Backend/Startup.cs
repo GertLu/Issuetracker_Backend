@@ -11,8 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Issuetracker_Backend.Model;
 using Microsoft.EntityFrameworkCore;
-using WorkoutApplication.Model;
 
 namespace Issuetracker_Backend
 {
