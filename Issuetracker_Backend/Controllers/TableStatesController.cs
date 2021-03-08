@@ -9,47 +9,47 @@ namespace Issuetracker_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TablesController : ControllerBase
+    public class TableStatesController : ControllerBase
     {
         private readonly DataContext _context;
 
-        public TablesController(DataContext context)
+        public TableStatesController(DataContext context)
         {
             _context = context;
         }
 
-        // GET: api/Tables
+        // GET: api/TableStates
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TableData>>> GetTables()
+        public async Task<ActionResult<IEnumerable<TableStateData>>> GetTableStates()
         {
-            return await _context.Tables.ToListAsync();
+            return await _context.TableStates.ToListAsync();
         }
 
-        // GET: api/Tables/5
+        // GET: api/TableStates/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TableData>> GetTableData(string id)
+        public async Task<ActionResult<TableStateData>> GetTableStateData(string id)
         {
-            var tableData = await _context.Tables.FindAsync(id);
+            var tableStateData = await _context.TableStates.FindAsync(id);
 
-            if (tableData == null)
+            if (tableStateData == null)
             {
                 return NotFound();
             }
 
-            return tableData;
+            return tableStateData;
         }
 
-        // PUT: api/Tables/5
+        // PUT: api/TableStates/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTableData(string id, TableData tableData)
+        public async Task<IActionResult> PutTableStateData(string id, TableStateData tableStateData)
         {
-            if (id != tableData.Id)
+            if (id != tableStateData.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(tableData).State = EntityState.Modified;
+            _context.Entry(tableStateData).State = EntityState.Modified;
 
             try
             {
@@ -57,7 +57,7 @@ namespace Issuetracker_Backend.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TableDataExists(id))
+                if (!TableStateDataExists(id))
                 {
                     return NotFound();
                 }
@@ -70,19 +70,19 @@ namespace Issuetracker_Backend.Controllers
             return NoContent();
         }
 
-        // POST: api/Tables
+        // POST: api/TableStates
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TableData>> PostTableData(TableData tableData)
+        public async Task<ActionResult<TableStateData>> PostTableStateData(TableStateData tableStateData)
         {
-            _context.Tables.Add(tableData);
+            _context.TableStates.Add(tableStateData);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (TableDataExists(tableData.Id))
+                if (TableStateDataExists(tableStateData.Id))
                 {
                     return Conflict();
                 }
@@ -92,28 +92,28 @@ namespace Issuetracker_Backend.Controllers
                 }
             }
 
-            return CreatedAtAction("GetTableData", new { id = tableData.Id }, tableData);
+            return CreatedAtAction("GetTableStateData", new { id = tableStateData.Id }, tableStateData);
         }
 
-        // DELETE: api/Tables/5
+        // DELETE: api/TableStates/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTableData(string id)
+        public async Task<IActionResult> DeleteTableStateData(string id)
         {
-            var tableData = await _context.Tables.FindAsync(id);
-            if (tableData == null)
+            var tableStateData = await _context.TableStates.FindAsync(id);
+            if (tableStateData == null)
             {
                 return NotFound();
             }
 
-            _context.Tables.Remove(tableData);
+            _context.TableStates.Remove(tableStateData);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool TableDataExists(string id)
+        private bool TableStateDataExists(string id)
         {
-            return _context.Tables.Any(e => e.Id == id);
+            return _context.TableStates.Any(e => e.Id == id);
         }
     }
 }

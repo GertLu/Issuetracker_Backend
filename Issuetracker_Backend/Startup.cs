@@ -1,18 +1,11 @@
+using Issuetracker_Backend.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using WorkoutApplication.Model;
 
 namespace Issuetracker_Backend
 {
@@ -28,14 +21,15 @@ namespace Issuetracker_Backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options =>
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
-                options.AddPolicy(name: MyAllowSpecificOrigins,
-                    builder =>
-                    {
-                        builder.WithOrigins("http://localhost:3000/", "http://localhost:3001/", "http://localhost:56935/").AllowAnyHeader().AllowAnyOrigin();
-                    });
-            });
+                builder
+                    .SetIsOriginAllowed(_ => true)
+                    .AllowCredentials()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            }));
+
             services.AddDbContext<DataContext>(OptionsBuilderConfigurationExtensions =>
                 OptionsBuilderConfigurationExtensions.UseNpgsql(
                     Configuration.GetConnectionString("Default")));
@@ -50,13 +44,15 @@ namespace Issuetracker_Backend
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            using (var context = scope.ServiceProvider.GetService<DataContext>()) context.Database.EnsureCreated();
+            using (var context = scope.ServiceProvider.GetService<DataContext>())
+                context.Database.EnsureCreated();
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Issuetracker_Backend v1"));
+                app.UseCors("MyPolicy");
             }
 
             app.UseHttpsRedirection();
