@@ -1,35 +1,37 @@
-﻿using Issuetracker_Backend.Model;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Issuetracker_Backend.Model;
 
 namespace Issuetracker_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RecordStatesController : ControllerBase
+    public class StatesController : ControllerBase
     {
         private readonly DataContext _context;
 
-        public RecordStatesController(DataContext context)
+        public StatesController(DataContext context)
         {
             _context = context;
         }
 
         // GET: api/States
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RecordStateData>>> GetRecordStates()
+        public async Task<ActionResult<IEnumerable<StateData>>> GetStates()
         {
-            return await _context.RecordStates.ToListAsync();
+            return await _context.States.ToListAsync();
         }
 
         // GET: api/States/5
-        [HttpGet("{recordId}/{stateId}")]
-        public async Task<ActionResult<RecordStateData>> GetRecordStateData(string recordId, string stateId)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<StateData>> GetStateData(string id)
         {
-            var stateData = _context.RecordStates.FirstOrDefault(x => x.RecordId == recordId && x.StateId == stateId);
+            var stateData = await _context.States.FindAsync(id);
 
             if (stateData == null)
             {
@@ -41,10 +43,10 @@ namespace Issuetracker_Backend.Controllers
 
         // PUT: api/States/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{recordId}/{stateId}")]
-        public async Task<IActionResult> PutRecordStateData(string recordId, string stateId, RecordStateData stateData)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutStateData(string id, StateData stateData)
         {
-            if (recordId != stateData.RecordId || stateId != stateData.StateId)
+            if (id != stateData.Id)
             {
                 return BadRequest();
             }
@@ -57,7 +59,7 @@ namespace Issuetracker_Backend.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!RecordStateDataExists(recordId, stateId))
+                if (!StateDataExists(id))
                 {
                     return NotFound();
                 }
@@ -73,16 +75,16 @@ namespace Issuetracker_Backend.Controllers
         // POST: api/States
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<RecordStateData>> PostRecordStateData(RecordStateData stateData)
+        public async Task<ActionResult<StateData>> PostStateData(StateData stateData)
         {
-            _context.RecordStates.Add(stateData);
+            _context.States.Add(stateData);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (RecordStateDataExists(stateData.RecordId, stateData.StateId))
+                if (StateDataExists(stateData.Id))
                 {
                     return Conflict();
                 }
@@ -92,28 +94,28 @@ namespace Issuetracker_Backend.Controllers
                 }
             }
 
-            return CreatedAtAction("GetRecordStateData", new { recordId = stateData.RecordId, stateId = stateData.StateId }, stateData);
+            return CreatedAtAction("GetStateData", new { id = stateData.Id }, stateData);
         }
 
         // DELETE: api/States/5
-        [HttpDelete("{recordId}/{stateId}")]
-        public async Task<IActionResult> DeleteRecordStateData(string recordId, string stateId)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteStateData(string id)
         {
-            var stateData = _context.RecordStates.FirstOrDefault(x => x.RecordId == recordId && x.StateId == stateId);
+            var stateData = await _context.States.FindAsync(id);
             if (stateData == null)
             {
                 return NotFound();
             }
 
-            _context.RecordStates.Remove(stateData);
+            _context.States.Remove(stateData);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool RecordStateDataExists(string recordId, string stateId)
+        private bool StateDataExists(string id)
         {
-            return _context.RecordStates.Any(e => e.RecordId == recordId && e.StateId == stateId);
+            return _context.States.Any(e => e.Id == id);
         }
     }
 }

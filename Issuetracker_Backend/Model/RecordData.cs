@@ -1,14 +1,14 @@
-﻿using Issuetracker_Backend.Model.Common;
-using System;
+﻿using System;
+using WalletAppAPI.Models.Common;
 
 namespace Issuetracker_Backend.Model
 {
-    public record RecordData : UniqueEntityData
+    public record RecordData: UniqueEntityData
     {
         public string Title { get; init; }
         public string Description { get; init; }
-        public string StateId { get; init; }
-        public DateTime DueDate { get; init; }
+        public StateData State { get; init; }
+        public DateTime DueDate  { get; init; }
         public string TableId { get; init; }
     }
 }

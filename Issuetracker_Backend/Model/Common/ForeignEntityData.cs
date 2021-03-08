@@ -1,4 +1,4 @@
-﻿namespace Issuetracker_Backend.Model.Common
+﻿namespace WalletAppAPI.Models.Common
 {
     public abstract record ForeignEntityData
     {
